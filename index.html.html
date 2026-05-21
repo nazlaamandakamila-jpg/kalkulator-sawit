@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulator Mutu Padi Komplit</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #f8fafc; -webkit-font-smoothing: antialiased; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-active { background-color: #16a34a; color: white; border-color: #16a34a; }
+        .tab-inactive { background-color: white; color: #64748b; border-color: #cbd5e1; }
+        .tab-inactive:hover { background-color: #f1f5f9; }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+
+    <div class="max-w-5xl mx-auto">
+        <header class="text-center mb-6">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 tracking-tight">Kalkulator Mutu Padi & Cuan</h1>
+            <p class="text-slate-600 max-w-2xl mx-auto text-base sm:text-lg">Grading mandiri dengan metode timbang <b>100 Gram</b>. Tentukan kualitas panen Anda agar harga tidak ditekan pembeli!</p>
+        </header>
+
+        <!-- Widget Info Standar & Aturan -->
+        <div class="max-w-3xl mx-auto mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-start gap-4">
+                <div class="hidden sm:flex bg-white p-2 rounded-full shadow-sm text-blue-500 shrink-0">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-blue-900 mb-2">Berdasarkan Standar Mutu Resmi & Keberlanjutan (Klik untuk info detail):</h3>
+                    <div class="flex flex-wrap gap-2 text-xs mb-3">
+                        <a href="https://www.google.com/search?q=SNI+224:2023+Gabah" target="_blank" class="bg-white text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm font-bold hover:-translate-y-1 hover:shadow-md hover:text-blue-600 transition-all cursor-pointer">📄 SNI 224:2023 (Gabah)</a>
+                        <a href="https://www.google.com/search?q=SNI+6128:2020+Beras" target="_blank" class="bg-white text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm font-bold hover:-translate-y-1 hover:shadow-md hover:text-blue-600 transition-all cursor-pointer">📄 SNI 6128:2020 (Beras)</a>
+                        <a href="https://www.google.com/search?q=Sustainable+Rice+Platform+Standard" target="_blank" class="bg-white text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-200 shadow-sm font-bold hover:-translate-y-1 hover:shadow-md hover:text-emerald-600 transition-all cursor-pointer">🌱 SRP (Sustainable Rice)</a>
+                        <a href="https://www.google.com/search?q=SNI+8969:2021+Indonesian+GAP" target="_blank" class="bg-white text-blue-700 px-3 py-1.5 rounded-lg border border-blue-200 shadow-sm font-bold hover:-translate-y-1 hover:shadow-md hover:text-blue-800 transition-all cursor-pointer">🚜 SNI 8969:2021 (GAP)</a>
+                    </div>
+                    <p class="text-xs sm:text-sm text-blue-800 leading-relaxed">
+                        Simulator ini adalah alat bantu bagi petani untuk menerapkan <b>Praktik Budidaya Padi Berkelanjutan</b>. Dengan mematuhi GAP (<i>Good Agricultural Practices</i>) & GHP (<i>Good Handling Practices</i>), kesejahteraan petani meningkat melalui harga yang adil, lahan tetap subur, dan mutu beras terjamin untuk konsumen.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 mb-8">
+            <button onclick="switchTab('gkp')" id="tab-gkp" class="tab-active flex-1 sm:flex-none px-6 py-3 rounded-xl font-bold text-sm sm:text-base border-2 transition-all shadow-sm flex items-center justify-center gap-2">
+                🌾 Gabah Baru Panen (GKP)
+            </button>
+            <button onclick="switchTab('gkg')" id="tab-gkg" class="tab-inactive flex-1 sm:flex-none px-6 py-3 rounded-xl font-bold text-sm sm:text-base border-2 transition-all shadow-sm flex items-center justify-center gap-2">
+                ☀️ Gabah Kering Jemur (GKG)
+            </button>
+            <button onclick="switchTab('beras')" id="tab-beras" class="tab-inactive flex-1 sm:flex-none px-6 py-3 rounded-xl font-bold text-sm sm:text-base border-2 transition-all shadow-sm flex items-center justify-center gap-2">
+                🍚 Beras Giling
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <div class="lg:col-span-5 bg-white p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-200">
+                <h2 id="form-title" class="text-xl font-bold mb-4 flex items-center gap-2 border-b border-slate-100 pb-4 text-brand-700">
+                    Input Data GKP
+                </h2>
+                
+                <div id="form-desc" class="mb-6 text-sm text-slate-500 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    Gabah yang baru saja dipanen dari sawah. Kondisi masih basah (Empuk saat digigit).
+                </div>
+
+                <div class="mb-6 p-4 bg-emerald-50 border border-emerald-100 rounded-xl space-y-4">
+                    <h3 class="text-sm font-bold text-emerald-800 flex items-center gap-2 border-b border-emerald-200 pb-2">
+                        <span>🌱</span> Kondisi Lahan & Agronomi
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Varietas Padi</label>
+                            <select id="input-varietas" class="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-sm font-medium bg-white">
+                                <option value="umum">- Pilih Varietas -</option>
+                                <option value="inpari32">Inpari 32 / 42 (Tahan Wereng)</option>
+                                <option value="ciherang">Ciherang / IR64 (Rentan)</option>
+                                <option value="hibrida">Padi Hibrida (Mapan, Intani, dll)</option>
+                                <option value="gogo">Padi Gogo / Tadah Hujan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Hama / Penyakit Dominan</label>
+                            <select id="input-hama" class="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-sm font-medium bg-white">
+                                <option value="aman">Terkendali (Aman)</option>
+                                <option value="wbc">Wereng Coklat (WBC)</option>
+                                <option value="walang">Walang Sangit</option>
+                                <option value="sundep">Penggerek Batang (Sundep/Beluk)</option>
+                                <option value="tikus">Tikus Sawah</option>
+                                <option value="blas">Jamur Blas (Potong Leher)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-5">
+                    <!-- Volume -->
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1" id="label-volume">Estimasi Volume Panen (Ton)</label>
+                        <input type="number" id="input-volume" value="2" min="0.1" step="0.1" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none text-lg font-bold bg-white">
+                    </div>
+
+                    <div class="relative py-2">
+                        <div class="absolute inset-0 flex items-center" aria-hidden="true"><div class="w-full border-t border-slate-200"></div></div>
+                        <div class="relative flex justify-center"><span class="px-3 bg-white text-xs font-bold text-brand-600 rounded-full border border-brand-200">Ambil 100 Gram Sampel</span></div>
+                    </div>
+
+                    <!-- Kotoran -->
+                    <div id="wrapper-kotoran">
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Kotoran & Hampa (Gram)</label>
+                        <input type="number" id="input-kotoran" value="5" min="0" step="0.5" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none text-lg font-semibold bg-slate-50">
+                        <p class="text-xs text-slate-500 mt-1" id="hint-kotoran">Batas SNI Maks: 10 gram</p>
+                    </div>
+
+                    <!-- Butir Rusak/Kuning/Hitam -->
+                    <div id="wrapper-rusak">
+                        <label class="block text-sm font-bold text-slate-700 mb-1" id="label-rusak">Butir Kuning / Rusak (Gram)</label>
+                        <input type="number" id="input-rusak" value="2" min="0" step="0.5" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none text-lg font-semibold bg-slate-50">
+                        <p class="text-xs text-slate-500 mt-1" id="hint-rusak">Batas SNI Maks: 3 gram</p>
+                    </div>
+
+                    <!-- Butir Patah (Hanya untuk Beras) -->
+                    <div id="wrapper-patah" class="hidden">
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Butir Patah / Menir (Gram)</label>
+                        <input type="number" id="input-patah" value="10" min="0" step="0.5" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none text-lg font-semibold bg-slate-50">
+                        <p class="text-xs text-slate-500 mt-1">Batas Premium: 15 gram | Medium: 25 gram</p>
+                    </div>
+
+                    <!-- DATA HARGA (BARU) -->
+                    <div class="mt-6 pt-6 border-t border-slate-200 space-y-4">
+                        <h3 class="text-sm font-bold text-brand-700 flex items-center gap-1">
+                            <span>💸</span> Harga Pasar & Referensi Pemerintah
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">Harga Tengkulak / Asalan (Rp/Kg)</label>
+                                <input type="number" id="input-harga-asalan" value="5000" step="100" class="w-full p-3 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-base font-bold bg-red-50 text-red-700">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1" id="label-harga-standar">Target Harga (HPP GKP)</label>
+                                <input type="number" id="input-harga-standar" value="6000" step="100" class="w-full p-3 border border-brand-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none text-base font-bold bg-brand-50 text-brand-700">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="hitungSemua()" class="mt-8 w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 px-4 rounded-xl shadow-lg transform hover:-translate-y-1 transition-all duration-200 text-lg">
+                    Cek Hasil Mutu & Cuan
+                </button>
+            </div>
+
+            <div class="lg:col-span-7 flex flex-col h-full">
+                
+                <div id="empty-state" class="bg-white p-10 rounded-3xl shadow-sm border-2 border-dashed border-slate-200 h-full flex flex-col items-center justify-center text-center">
+                    <span class="text-5xl mb-4">🔎</span>
+                    <h3 class="text-xl font-bold text-slate-700">Pilih Tab, Masukkan Angka, dan Hitung</h3>
+                    <p class="text-slate-500 mt-2">Sistem akan otomatis menyesuaikan standar SNI berdasarkan jenis padi/beras yang Anda pilih.</p>
+                </div>
+
+                <div id="result-state" class="hidden fade-in space-y-6">
+                    
+                    <!-- Kartu Grade -->
+                    <div id="grade-card" class="p-6 sm:p-8 rounded-3xl shadow-lg border-2 relative overflow-hidden text-white transition-all">
+                        <p class="text-sm font-bold uppercase tracking-widest mb-1 opacity-80" id="grade-label">Status Mutu</p>
+                        <h3 class="text-2xl sm:text-3xl font-black mb-2" id="grade-title">GKP STANDAR</h3>
+                        <p class="text-sm sm:text-base opacity-90 font-medium" id="grade-desc">...</p>
+                    </div>
+
+                    <!-- Kartu Finansial -->
+                    <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-100">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">💰 Simulasi Keuntungan</h3>
+                        
+                        <div class="space-y-3 mb-5">
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                <div>
+                                    <h4 class="font-bold text-slate-700 text-sm sm:text-base" id="finance-label-1">Jual Asalan ke Tengkulak</h4>
+                                    <p class="text-xs text-slate-500" id="finance-sub-1">Ada potongan rafaksi berat 15%</p>
+                                </div>
+                                <span class="font-black text-slate-700 text-lg sm:text-xl" id="finance-val-1">Rp 0</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-4 bg-brand-50 rounded-xl border border-brand-200">
+                                <div>
+                                    <h4 class="font-bold text-brand-800 text-sm sm:text-base" id="finance-label-2">Jual Standar SNI Mandiri</h4>
+                                    <p class="text-xs text-brand-600" id="finance-sub-2">Sesuai grade yang didapat</p>
+                                </div>
+                                <span class="font-black text-brand-700 text-lg sm:text-xl" id="finance-val-2">Rp 0</span>
+                            </div>
+                        </div>
+
+                        <div id="profit-badge" class="w-full text-center p-4 rounded-xl font-bold shadow-inner">
+                            <span class="block text-sm opacity-90 mb-1" id="profit-text">Selisih Keuntungan Ekstra:</span>
+                            <div class="flex items-center justify-center gap-3">
+                                <span class="text-2xl sm:text-3xl" id="profit-val">+ Rp 0</span>
+                                <span class="text-sm px-3 py-1 bg-white/60 rounded-lg hidden font-black tracking-wide" id="profit-pct">↑ 0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kartu Rekomendasi GAP/GHP -->
+                    <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-100">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2 flex items-center gap-2">
+                            <span>💡</span> Detektif Lahan (GAP & GHP)
+                        </h3>
+                        <div id="recommendations" class="space-y-3">
+                            <!-- Diisi via JS -->
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'gkp'; // gkp, gkg, beras
+
+        // UI Elements
+        const formTitle = document.getElementById('form-title');
+        const formDesc = document.getElementById('form-desc');
+        const wrapperPatah = document.getElementById('wrapper-patah');
+        const hintKotoran = document.getElementById('hint-kotoran');
+        const labelRusak = document.getElementById('label-rusak');
+        const hintRusak = document.getElementById('hint-rusak');
+        const labelVolume = document.getElementById('label-volume');
+
+        const inputs = {
+            volume: document.getElementById('input-volume'),
+            kotoran: document.getElementById('input-kotoran'),
+            rusak: document.getElementById('input-rusak'),
+            patah: document.getElementById('input-patah'),
+            hargaAsalan: document.getElementById('input-harga-asalan'),
+            hargaStandar: document.getElementById('input-harga-standar')
+        };
+        const labelHargaStandar = document.getElementById('label-harga-standar');
+
+        const formatRupiah = (angka) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+
+        function switchTab(mode) {
+            currentMode = mode;
+            
+            // Update Tab Styles
+            ['gkp', 'gkg', 'beras'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === mode) {
+                    btn.className = "tab-active flex-1 sm:flex-none px-6 py-3 rounded-xl font-bold text-sm sm:text-base border-2 transition-all shadow-sm flex items-center justify-center gap-2";
+                } else {
+                    btn.className = "tab-inactive flex-1 sm:flex-none px-6 py-3 rounded-xl font-bold text-sm sm:text-base border-2 transition-all shadow-sm flex items-center justify-center gap-2";
+                }
+            });
+
+            // Update Form Fields based on Mode
+            if (mode === 'gkp') {
+                formTitle.innerHTML = '🌾 Input Data Gabah Baru Panen (GKP)';
+                formDesc.innerText = 'Asumsi: Gabah baru dipotong, masih basah (empuk jika digigit).';
+                labelVolume.innerText = 'Estimasi Volume Gabah (Ton)';
+                wrapperPatah.classList.add('hidden');
+                labelRusak.innerText = 'Butir Kuning / Rusak (Gram)';
+                hintKotoran.innerText = 'Batas SNI GKP: Maks 10 gram';
+                hintRusak.innerText = 'Batas SNI: Maks 3 gram';
+                inputs.kotoran.value = 5;
+                inputs.hargaAsalan.value = 5000;
+                inputs.hargaStandar.value = 6000;
+                labelHargaStandar.innerText = 'Target Harga (HPP GKP)';
+            } 
+            else if (mode === 'gkg') {
+                formTitle.innerHTML = '☀️ Input Data Gabah Kering Jemur (GKG)';
+                formDesc.innerText = 'Asumsi: Gabah sudah dijemur hingga kering (bunyi mletak keras saat digigit).';
+                labelVolume.innerText = 'Estimasi Volume Gabah (Ton)';
+                wrapperPatah.classList.add('hidden');
+                labelRusak.innerText = 'Butir Kuning / Rusak (Gram)';
+                hintKotoran.innerText = 'Batas SNI GKG: Maks 3 gram';
+                hintRusak.innerText = 'Batas SNI: Maks 3 gram';
+                inputs.kotoran.value = 2;
+                inputs.hargaAsalan.value = 6500;
+                inputs.hargaStandar.value = 7400;
+                labelHargaStandar.innerText = 'Target Harga (HPP GKG)';
+            } 
+            else if (mode === 'beras') {
+                formTitle.innerHTML = '🍚 Input Data Beras Giling';
+                formDesc.innerText = 'Asumsi: Gabah sudah digiling menjadi beras putih siap jual/konsumsi.';
+                labelVolume.innerText = 'Estimasi Volume Beras (Ton)';
+                wrapperPatah.classList.remove('hidden'); // Munculkan input beras patah
+                labelRusak.innerText = 'Butir Menghitam / Cacat (Gram)';
+                hintKotoran.innerText = 'Batas Premium: 0g | Medium: Maks 1g';
+                hintRusak.innerText = 'Batas Premium: 0g | Medium: Maks 1g';
+                inputs.kotoran.value = 0;
+                inputs.hargaAsalan.value = 11000;
+                inputs.hargaStandar.value = 14900;
+                labelHargaStandar.innerText = 'Target Harga (HET Premium)';
+            }
+
+            // Hide results when switching tabs
+            document.getElementById('empty-state').classList.remove('hidden');
+            document.getElementById('result-state').classList.add('hidden');
+        }
+
+        function hitungSemua() {
+            const volume = parseFloat(inputs.volume.value) || 0;
+            const kotoran = parseFloat(inputs.kotoran.value) || 0;
+            const rusak = parseFloat(inputs.rusak.value) || 0;
+            const patah = parseFloat(inputs.patah.value) || 0;
+            
+            const hrgAsalan = parseFloat(inputs.hargaAsalan.value) || 0;
+            const hrgStandar = parseFloat(inputs.hargaStandar.value) || 0;
+            const totalKg = volume * 1000;
+
+            const varietas = document.getElementById('input-varietas').value;
+            const hama = document.getElementById('input-hama').value;
+
+            let gradeData = {};
+            let financeData = {};
+            let masalah = [];
+
+            // === LOGIKA AGRONOMI & HAMA ===
+            if (varietas === 'ciherang' && (hama === 'wbc' || hama === 'blas')) {
+                masalah.push({ icon: '🌾', text: "<b>[SRP: Pemilihan Benih]</b> Ciherang/IR64 memang pulen, tapi sudah sangat rentan terhadap Wereng dan Blas. <b>Solusi:</b> Lakukan rotasi varietas musim depan dengan galur yang lebih tahan seperti Inpari 32 atau Inpari 42 untuk memutus siklus hama." });
+            } else if (varietas === 'hibrida') {
+                masalah.push({ icon: '🌾', text: "<b>[GAP: Manajemen Hibrida]</b> Padi Hibrida butuh nutrisi tinggi. Jika gabah banyak yang hampa, pastikan pemupukan Kalium (K) tercukupi saat fase primordia (bunting) agar malai terisi penuh sampai pangkal." });
+            }
+
+            if (hama === 'wbc') {
+                masalah.push({ icon: '🦟', text: "<b>[SRP: Pengendalian Hama Terpadu]</b> Wereng Coklat terdeteksi. Jangan gunakan pestisida spektrum luas berlebihan yang membunuh laba-laba (musuh alami wereng). Gunakan sistem pengairan basah-kering (AWD) agar pangkal batang tidak lembab, dan semprotkan agen hayati <i>Beauveria bassiana</i>." });
+            } else if (hama === 'walang') {
+                masalah.push({ icon: '🪲', text: "<b>[GAP: Sanitasi Lahan]</b> Walang sangit menyebabkan bulir hitam/coklat dan kopong. <b>Saran:</b> Bersihkan gulma di pematang sawah sebelum padi berbunga (fase generatif), karena di situlah walang sangit bersembunyi. Pasang perangkap bau (bangkai kepiting/keong) di pinggir lahan." });
+            } else if (hama === 'sundep') {
+                masalah.push({ icon: '🐛', text: "<b>[SRP: Pencegahan Hama]</b> Penggerek batang (Beluk) membuat malai menjadi putih dan gabah hampa 100%. <b>Solusi Pasca-Panen:</b> Potong jerami serendah mungkin menyentuh tanah agar ulat di pangkal batang ikut mati. Musim depan, kumpulkan kelompok telur ngengat sejak di persemaian." });
+            } else if (hama === 'tikus') {
+                masalah.push({ icon: '🐀', text: "<b>[SRP: Keseimbangan Ekosistem]</b> Serangan tikus. Lakukan gropyokan massal bersama kelompok tani di awal musim sebelum tanam. Pasang rumah burung hantu (Tyto alba) di tengah sawah sebagai predator alami." });
+            } else if (hama === 'blas') {
+                masalah.push({ icon: '🦠', text: "<b>[GAP: Manajemen Pupuk]</b> Jamur Blas (Potong Leher) membuat leher malai patah dan suplai makanan ke gabah terhenti (menjadi hampa). <b>Solusi:</b> Kurangi dosis pupuk Urea (Nitrogen) karena membuat daun terlalu rimbun dan lemas. Perbanyak pupuk Kalium/Phonska." });
+            }
+
+            // === LOGIKA GKP ===
+            if (currentMode === 'gkp') {
+                masalah.push({ icon: '💧', text: "<b>[SRP: Pasca-Panen]</b> Gabah masih basah. Jika panen di <b>Musim Hujan/La Nina</b>, jemur tipis (3-5 cm) di atas terpal dan balik tiap jam. Jika hujan terus-menerus, kolaborasi dengan kelompok tani untuk menyewa <i>Bed Dryer</i> (pengering mekanis) agar terhindar dari jamur." });
+                
+                if (kotoran > 10) masalah.push({ icon: '🍃', text: "<b>[SRP: Efisiensi Panen]</b> Hampa/kotoran melebihi batas. Jika lahan di pesisir/berangin kencang, gunakan kelambu saat merontokkan. Jika pakai mesin <i>Combine Harvester</i>, <b>setel ulang putaran kipas blower (dikencangkan sedikit)</b> agar gabah kopong terbang sebelum masuk karung." });
+                if (rusak > 3) masalah.push({ icon: '🐛', text: "<b>[SRP: Pengendalian Hama]</b> Butir rusak tinggi (indikasi Walang Sangit/Jamur). Terjadi jika jarak tanam terlalu rapat di lahan lembab. <b>Solusi Musim Depan:</b> Terapkan Jajar Legowo 2:1. Bersihkan rumput di pematang (sarang hama). Semprotkan agen hayati <i>Beauveria bassiana</i> di sore hari saat fase berbunga." });
+
+                if (kotoran <= 10 && rusak <= 3) {
+                    gradeData = { title: "GKP STANDAR SNI", desc: "Kualitas wajar untuk gabah basah.", bg: "bg-blue-600 border-blue-700" };
+                } else {
+                    gradeData = { title: "GKP DI BAWAH STANDAR 🚨", desc: "Kotoran/hampa terlalu tinggi. Rawan potongan berat (rafaksi) yang merugikan.", bg: "bg-red-600 border-red-700" };
+                }
+
+                financeData.l1 = "Jual Basah Asalan (Kena Rafaksi 15%)";
+                financeData.s1 = "Tengkulak potong berat kotoran/air";
+                financeData.v1 = (totalKg * 0.85) * hrgAsalan; 
+
+                financeData.l2 = "Jual Setelah Disortir Sesuai SNI";
+                financeData.s2 = "Harga GKP wajar tanpa potongan sepihak";
+                financeData.v2 = totalKg * hrgStandar; 
+            } 
+            
+            // === LOGIKA GKG ===
+            else if (currentMode === 'gkg') {
+                masalah.push({ icon: '☀️', text: "<b>[SRP: Nilai Tambah Ekonomi]</b> Menjual GKG memutus rantai tengkulak. Pastikan menyimpan di gudang kering dengan sirkulasi udara baik." });
+                if (kotoran > 3) masalah.push({ icon: '🧹', text: "<b>[SRP: Mutu Produk]</b> Kotoran (>3g). Pabrik besar akan menolak ini karena jerami dan batu kecil bisa <b>merusak karet roll (mesin huller)</b> mereka. Ayak atau tampi (blower) ulang sebelum dijual." });
+                if (rusak > 3) masalah.push({ icon: '🔥', text: "<b>[SRP: Manajemen Suhu]</b> Butir kuning menumpuk. Ini adalah efek 'Gabah Mati' akibat gabah basah yang dibiarkan bertumpuk di karung hingga kepanasan/fermentasi semalaman sebelum dijemur. Selalu bongkar karung panen segera!" });
+
+                if (kotoran <= 3 && rusak <= 3) {
+                    gradeData = { title: "GKG PREMIUM 🌟", desc: "Sempurna! Gabah bersih dan kering. Siap masuk penggilingan besar / Bulog.", bg: "bg-emerald-600 border-emerald-700" };
+                } else {
+                    gradeData = { title: "GKG ASALAN", desc: "Gabah sudah kering, tapi masih kotor atau banyak cacat.", bg: "bg-amber-500 border-amber-600" };
+                }
+
+                financeData.l1 = "Jual Kondisi Asalan (Kotor)";
+                financeData.s1 = "Jika dijual tanpa ditampi/dibersihkan ulang";
+                financeData.v1 = totalKg * hrgAsalan;
+
+                financeData.l2 = "Jual GKG Kering SNI Saat Ini";
+                financeData.s2 = "Potensi harga ke pabrik beras / Bulog";
+                financeData.v2 = totalKg * hrgStandar;
+            }
+
+            // === LOGIKA BERAS ===
+            else if (currentMode === 'beras') {
+                if (patah > 25) masalah.push({ icon: '💔', text: "<b>[SRP: Manajemen Cuaca Ekstrem]</b> Menir hancur sangat tinggi. Di musim kemarau (El Nino), jangan pernah menjemur padi langsung di atas aspal panas! <i>Sun-cracking</i> (retak di dalam bulir) akan membuat gabah remuk saat digiling. Selalu pakai terpal." });
+                if (rusak > 1) masalah.push({ icon: '🌧️', text: "<b>[SRP: Sanitasi Gudang]</b> Beras hitam/kusam/bau apek. Biasanya terjadi di musim hujan akibat kelembapan tanah yang merambat naik ke karung. <b>Solusi Aplikatif:</b> Selalu gunakan <i>Palet Kayu</i> sebagai alas tumpukan karung gabah di gudang." });
+                if (kotoran > 1) masalah.push({ icon: '⚙️', text: "<b>[SRP: Mesin Penggilingan]</b> Masih ada batu atau gabah utuh tidak terkupas. <b>Solusi:</b> Karet roll pada mesin pemecah kulit (Husker) di tempat penggilingan sudah aus atau jarak setelannya kurang pas (kurang jepit). Beritahu operator gilingan." });
+
+                let hrgFinalBeras = hrgStandar;
+                if (patah <= 15 && rusak <= 0 && kotoran <= 0) {
+                    gradeData = { title: "BERAS PREMIUM 🏆", desc: "Beras utuh, putih, bersih sempurna. Nilai jual maksimal ke supermarket/ritel.", bg: "bg-brand-600 border-brand-700" };
+                    if(masalah.length === 0) masalah.push({ icon: '✨', text: "<b>[SRP: Standar Ekstra]</b> Mutu beras luar biasa utuh dan bening. Konsistensi ini menunjukkan lahan Anda memiliki unsur hara tanah (Silika) yang sangat tercukupi."});
+                    hrgFinalBeras = hrgStandar; 
+                } 
+                else if (patah <= 25 && rusak <= 1 && kotoran <= 1) {
+                    gradeData = { title: "BERAS MEDIUM 🌟", desc: "Kualitas standar pasar umum dan Bulog.", bg: "bg-blue-500 border-blue-600" };
+                    hrgFinalBeras = hrgStandar - 1500; // Medium dihargai sedikit di bawah premium
+                } 
+                else {
+                    gradeData = { title: "BERAS BAWAH STANDAR ⚠️", desc: "Kualitas asalan, beras hancur / kotor.", bg: "bg-rose-600 border-rose-700" };
+                    hrgFinalBeras = hrgAsalan;
+                }
+
+                financeData.l1 = "Jual Beras Asalan (Curah)";
+                financeData.s1 = "Harga borongan ke pengepul beras";
+                financeData.v1 = totalKg * hrgAsalan;
+
+                financeData.l2 = "Jual Kemasan Sesuai Kelas Mutu";
+                financeData.s2 = "Potensi harga berdasarkan standar SNI";
+                financeData.v2 = totalKg * hrgFinalBeras;
+            }
+
+            // Update Grade Card
+            const gc = document.getElementById('grade-card');
+            gc.className = `p-6 sm:p-8 rounded-3xl shadow-lg border-2 relative overflow-hidden text-white transition-all ${gradeData.bg}`;
+            document.getElementById('grade-title').innerText = gradeData.title;
+            document.getElementById('grade-desc').innerText = gradeData.desc;
+
+            // Update Finance
+            document.getElementById('finance-label-1').innerText = financeData.l1;
+            document.getElementById('finance-sub-1').innerText = financeData.s1;
+            document.getElementById('finance-val-1').innerText = formatRupiah(financeData.v1);
+            
+            document.getElementById('finance-label-2').innerText = financeData.l2;
+            document.getElementById('finance-sub-2').innerText = financeData.s2;
+            document.getElementById('finance-val-2').innerText = formatRupiah(financeData.v2);
+
+            const selisih = financeData.v2 - financeData.v1;
+            const persentaseNaik = financeData.v1 > 0 ? ((financeData.v2 - financeData.v1) / financeData.v1) * 100 : 0;
+            
+            const pBadge = document.getElementById('profit-badge');
+            const pText = document.getElementById('profit-text');
+            const pVal = document.getElementById('profit-val');
+            const pPct = document.getElementById('profit-pct');
+
+            if (selisih > 0) {
+                pBadge.className = "w-full text-center p-4 rounded-xl font-bold shadow-inner bg-green-100 text-green-800 border border-green-200 mt-4";
+                pText.innerText = "Selisih Keuntungan Ekstra (Jika Disortir/Dijemur):";
+                pVal.innerText = "+" + formatRupiah(selisih);
+                pPct.innerText = `↑ Naik ${persentaseNaik.toFixed(1)}%`;
+                pPct.classList.remove('hidden');
+                pPct.classList.add('text-green-800');
+            } else if (selisih < 0) {
+                pBadge.className = "w-full text-center p-4 rounded-xl font-bold shadow-inner bg-red-100 text-red-800 border border-red-200 mt-4";
+                pText.innerText = "Potensi Kerugian Kualitas:";
+                pVal.innerText = formatRupiah(selisih);
+                pPct.innerText = `↓ Turun ${Math.abs(persentaseNaik).toFixed(1)}%`;
+                pPct.classList.remove('hidden');
+                pPct.classList.add('text-red-800');
+            } else {
+                pBadge.className = "w-full text-center p-4 rounded-xl font-bold shadow-inner bg-slate-100 text-slate-800 border border-slate-200 mt-4";
+                pText.innerText = "Harga Sesuai Standar Minimal";
+                pVal.innerText = "Maksimal";
+                pPct.classList.add('hidden');
+            }
+
+            // Update Rekomendasi
+            const recBox = document.getElementById('recommendations');
+            recBox.innerHTML = '';
+            masalah.forEach(m => {
+                recBox.innerHTML += `
+                    <div class="flex gap-3 items-start p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700">
+                        <span class="text-xl">${m.icon}</span>
+                        <p>${m.text}</p>
+                    </div>
+                `;
+            });
+
+            // Show Result
+            document.getElementById('empty-state').classList.add('hidden');
+            document.getElementById('result-state').classList.remove('hidden');
+
+            // Scroll for mobile
+            if(window.innerWidth < 1024) {
+                setTimeout(() => {
+                    document.getElementById('result-state').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
+
+        // Initialize state
+        switchTab('gkp');
+    </script>
+</body>
+</html>
