@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Grading Sawit Pintar - SNI, ISPO & RSPO</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        palm: {
+                            50: '#f2f8f3',
+                            100: '#e1efe4',
+                            200: '#c5dfcd',
+                            300: '#9bc6aa',
+                            400: '#6ca781',
+                            500: '#4a8b62',
+                            600: '#38704c',
+                            700: '#2e5b3f',
+                            800: '#264a34',
+                            950: '#0f2418',
+                        },
+                        oil: {
+                            100: '#fef7e6',
+                            400: '#f3b33d',
+                            500: '#e5961d',
+                            600: '#c77810',
+                            800: '#8c4e0b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f4;
+        }
+        .step-active {
+            border-color: #38704c !important;
+            background-color: #e1efe4 !important;
+        }
+        .step-warning {
+            border-color: #e5961d !important;
+            background-color: #fef7e6 !important;
+        }
+        .step-danger {
+            border-color: #dc2626 !important;
+            background-color: #fee2e2 !important;
+        }
+    </style>
+</head>
+<body class="text-stone-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header / Navbar -->
+    <header class="bg-gradient-to-r from-palm-950 via-palm-800 to-palm-950 text-white shadow-lg border-b-4 border-oil-500">
+        <div class="max-w-6xl mx-auto px-4 py-5 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-oil-500 p-2.5 rounded-2xl shadow-md flex items-center justify-center">
+                    <!-- Palm Tree / Leaf SVG -->
+                    <svg class="w-8 h-8 text-palm-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v18M5 12h14M5 7l7 5-7 5M19 7l-7 5 19 5"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-palm-600 text-[10px] text-white font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Aplikasi Petani</span>
+                        <span class="bg-oil-500 text-[10px] text-palm-950 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Multi-Standar</span>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-extrabold tracking-tight mt-0.5">E-GRADING SAWIT PINTAR</h1>
+                    <p class="text-palm-200 text-xs font-light">Simulasi Kualitas & Sertifikasi Hasil Panen Kelapa Sawit Berkelanjutan</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button onclick="openModal('modal-info')" class="text-xs bg-palm-700/60 hover:bg-palm-700 text-palm-100 border border-palm-600 transition px-3 py-2 rounded-xl font-medium flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Apa itu SNI, ISPO & RSPO?
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-6xl w-full mx-auto p-4 md:py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- LEFT COLUMN: Inputs & Parameters (5 Columns) -->
+        <div class="lg:col-span-5 space-y-6">
+            
+            <!-- Card 1: Kualitas Fisik TBS (SNI 8675:2018) -->
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-stone-200">
+                <div class="flex items-center gap-2 mb-4 border-b pb-3 border-stone-100">
+                    <div class="p-1.5 bg-palm-100 text-palm-700 rounded-lg font-bold text-xs">Pilar 1</div>
+                    <h3 class="font-extrabold text-stone-900 tracking-tight">Kualitas Fisik Buah (SNI)</h3>
+                </div>
+                <p class="text-xs text-stone-500 mb-4">Pilih perkiraan kondisi Tandan Buah Segar (TBS) sawit hasil panen Anda saat ini:</p>
+
+                <div class="space-y-4">
+                    <!-- Input 1: Buah Matang Sempurna (Fraksi 2 & 3) -->
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold text-stone-700 mb-1">
+                            <label class="flex items-center gap-1">Buah Matang Sempurna <span class="text-palm-600">(Paling Bagus)</span></label>
+                            <span id="val-matang" class="text-palm-700 bg-palm-100 px-2 py-0.5 rounded-md font-bold">90%</span>
+                        </div>
+                        <input type="range" id="input-matang" min="0" max="100" step="1" value="90" oninput="syncPercentages('matang')" class="w-full accent-palm-600 h-2 bg-stone-100 rounded-lg cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-stone-400 mt-1">
+                            <span>Sangat Sedikit</span>
+                            <span class="text-palm-600 font-semibold">Target Pabrik: Min 80%</span>
+                            <span>Semua Matang (100%)</span>
+                        </div>
+                    </div>
+
+                    <!-- Input 2: Buah Mentah (Fraksi 0 & 1) -->
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold text-stone-700 mb-1">
+                            <label class="flex items-center gap-1">Buah Mentah / Mengkal <span class="text-red-600">(Kena Potongan)</span></label>
+                            <span id="val-mentah" class="text-red-700 bg-red-50 px-2 py-0.5 rounded-md font-bold">5%</span>
+                        </div>
+                        <input type="range" id="input-mentah" min="0" max="50" step="1" value="5" oninput="syncPercentages('mentah')" class="w-full accent-red-600 h-2 bg-stone-100 rounded-lg cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-stone-400 mt-1">
+                            <span>Bagus (0%)</span>
+                            <span class="text-red-600 font-semibold">Toleransi Pabrik: Max 5%</span>
+                            <span>Banyak Mentah (50%)</span>
+                        </div>
+                    </div>
+
+                    <!-- Input 3: Gagang Panjang / Buah Lewat Matang -->
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold text-stone-700 mb-1">
+                            <label class="flex items-center gap-1">Gagang Panjang &gt;5cm / Buah Kosong</label>
+                            <span id="val-cacat" class="text-orange-700 bg-orange-50 px-2 py-0.5 rounded-md font-bold">5%</span>
+                        </div>
+                        <input type="range" id="input-cacat" min="0" max="30" step="1" value="5" oninput="syncPercentages('cacat')" class="w-full accent-orange-500 h-2 bg-stone-100 rounded-lg cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-stone-400 mt-1">
+                            <span>Bersih (0%)</span>
+                            <span class="text-orange-600 font-semibold">Toleransi Pabrik: Max 5%</span>
+                            <span>Sangat Kotor (30%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Sertifikasi Berkelanjutan (ISPO & RSPO) -->
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-stone-200 space-y-5">
+                
+                <!-- ISPO Section -->
+                <div>
+                    <div class="flex items-center gap-2 mb-3 border-b pb-2 border-stone-100">
+                        <div class="p-1.5 bg-emerald-100 text-emerald-800 rounded-lg font-bold text-xs">Pilar 2</div>
+                        <div>
+                            <h3 class="font-extrabold text-stone-900 tracking-tight text-sm">Sertifikasi ISPO (Nasional)</h3>
+                            <p class="text-[10px] text-stone-400">Mandatori hukum Indonesia bagi seluruh kebun</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2 text-xs">
+                        <label class="flex items-start gap-2.5 p-2 rounded-xl hover:bg-stone-50 cursor-pointer transition">
+                            <input type="checkbox" id="check-legal" checked onchange="updateGrading()" class="mt-0.5 w-4 h-4 text-palm-600 border-stone-300 rounded focus:ring-palm-500">
+                            <div>
+                                <span class="font-semibold block text-stone-800">Legalitas Lahan Jelas</span>
+                                <span class="text-[10px] text-stone-500">Memiliki SHM/Girik dan Surat Tanda Daftar Budidaya (STDB).</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start gap-2.5 p-2 rounded-xl hover:bg-stone-50 cursor-pointer transition">
+                            <input type="checkbox" id="check-lindung" checked onchange="updateGrading()" class="mt-0.5 w-4 h-4 text-palm-600 border-stone-300 rounded focus:ring-palm-500">
+                            <div>
+                                <span class="font-semibold block text-stone-800">Bukan Lahan Hutan / Gambut Lindung</span>
+                                <span class="text-[10px] text-stone-500">Kebun tidak berada di kawasan zona hijau/hutan konservasi negara.</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start gap-2.5 p-2 rounded-xl hover:bg-stone-50 cursor-pointer transition">
+                            <input type="checkbox" id="check-kebakaran" checked onchange="updateGrading()" class="mt-0.5 w-4 h-4 text-palm-600 border-stone-300 rounded focus:ring-palm-500">
+                            <div>
+                                <span class="font-semibold block text-stone-800">Tanpa Membakar Lahan (Zero Burning)</span>
+                                <span class="text-[10px] text-stone-500">Membuka atau mengolah kebun sawit tanpa metode pembakaran.</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- RSPO Section -->
+                <div class="pt-2">
+                    <div class="flex items-center gap-2 mb-3 border-b pb-2 border-stone-100">
+                        <div class="p-1.5 bg-oil-100 text-oil-800 rounded-lg font-bold text-xs">Pilar 3</div>
+                        <div>
+                            <h3 class="font-extrabold text-stone-900 tracking-tight text-sm">Sertifikasi RSPO (Global)</h3>
+                            <p class="text-[10px] text-stone-400">Sukarela untuk klaim harga premium pasar internasional</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2 text-xs">
+                        <label class="flex items-start gap-2.5 p-2 rounded-xl hover:bg-stone-50 cursor-pointer transition">
+                            <input type="checkbox" id="check-kelompok" checked onchange="updateGrading()" class="mt-0.5 w-4 h-4 text-palm-600 border-stone-300 rounded focus:ring-palm-500">
+                            <div>
+                                <span class="font-semibold block text-stone-800">Anggota Koperasi / Asosiasi Tani</span>
+                                <span class="text-[10px] text-stone-500">Tergabung dalam wadah kelompok tani agar mudah diaudit bersama.</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start gap-2.5 p-2 rounded-xl hover:bg-stone-50 cursor-pointer transition">
+                            <input type="checkbox" id="check-racun" checked onchange="updateGrading()" class="mt-0.5 w-4 h-4 text-palm-600 border-stone-300 rounded focus:ring-palm-500">
+                            <div>
+                                <span class="font-semibold block text-stone-800">Tanpa Pestisida Terlarang (Parakuat)</span>
+                                <span class="text-[10px] text-stone-500">Menggunakan herbisida ramah lingkungan, tidak memakai bahan kimia dilarang.</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start gap-2.5 p-2 rounded-xl hover:bg-stone-50 cursor-pointer transition">
+                            <input type="checkbox" id="check-sosial" checked onchange="updateGrading()" class="mt-0.5 w-4 h-4 text-palm-600 border-stone-300 rounded focus:ring-palm-500">
+                            <div>
+                                <span class="font-semibold block text-stone-800">Tanpa Pekerja Anak & Hak Adil</span>
+                                <span class="text-[10px] text-stone-500">Tidak melibatkan anak-anak di bawah umur untuk bekerja berat memanen sawit.</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Interactive Flowchart & Farmer Calculator (7 Columns) -->
+        <div class="lg:col-span-7 space-y-6">
+            
+            <!-- Result Overview Banner -->
+            <div id="banner-result" class="bg-palm-50 border border-palm-200 p-5 rounded-3xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition duration-300">
+                <div class="flex items-center gap-3.5">
+                    <div id="result-icon-bg" class="bg-palm-600 text-white p-3 rounded-2xl shadow-inner">
+                        <!-- Default check SVG -->
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-[11px] text-stone-500 font-bold uppercase tracking-wider">Status Kelayakan Hasil Panen</p>
+                        <h2 id="result-title" class="text-xl font-extrabold text-palm-950 mt-0.5">SAWIT PREMIUM (MATANG & BERKELANJUTAN)</h2>
+                        <p id="result-desc" class="text-xs text-stone-600 font-medium">Biji sawit kualitas prima, lolos standar nasional & dunia.</p>
+                    </div>
+                </div>
+                <div class="text-left md:text-right flex flex-col md:items-end gap-1">
+                    <span id="result-badge" class="inline-block bg-palm-600 text-white text-[11px] font-extrabold uppercase px-3 py-1 rounded-full tracking-wider">
+                        MUTU UTAMA
+                    </span>
+                    <span id="payout-factor" class="text-xs font-bold text-oil-600">Sertifikasi: ISPO & RSPO Aktif</span>
+                </div>
+            </div>
+
+            <!-- Flowchart Visualizer -->
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-200">
+                <div class="flex justify-between items-center mb-6">
+                    <h4 class="font-extrabold text-stone-900 flex items-center gap-2 text-sm sm:text-base">
+                        <span class="p-1 bg-palm-100 text-palm-700 rounded-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        </span>
+                        Bagan Alur Penilaian (Flowchart)
+                    </h4>
+                    <span class="text-[11px] text-stone-400 font-medium flex items-center gap-1">
+                        <span class="w-2.5 h-2.5 rounded-full bg-palm-500"></span> Jalur Hijau = Lolos / Sempurna
+                    </span>
+                </div>
+
+                <!-- Vertical Flowchart Nodes -->
+                <div class="relative flex flex-col gap-5 items-stretch">
+                    
+                    <!-- Vertical Line Connector helper -->
+                    <div class="absolute left-6 top-6 bottom-6 w-0.5 bg-stone-200 -z-0"></div>
+
+                    <!-- Step 1: Penerimaan TBS -->
+                    <div id="flow-step-1" class="flex items-start gap-4 p-3 rounded-2xl border-2 border-stone-100 transition duration-300 bg-stone-50/50 z-10 step-active">
+                        <div class="w-7 h-7 rounded-full bg-palm-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">1</div>
+                        <div class="flex-grow">
+                            <h5 class="font-bold text-stone-900 text-xs">Penerimaan & Sortir Fisik (SNI)</h5>
+                            <p id="flow-desc-1" class="text-[11px] text-stone-500 mt-0.5">Mengukur kelayakan kematangan buah mentah/matang alami.</p>
+                        </div>
+                        <span id="flow-status-1" class="text-[10px] font-extrabold bg-palm-100 text-palm-700 px-2 py-0.5 rounded-md uppercase">MATANG: OK</span>
+                    </div>
+
+                    <!-- Step 2: Kebijakan ISPO -->
+                    <div id="flow-step-2" class="flex items-start gap-4 p-3 rounded-2xl border-2 border-stone-100 transition duration-300 bg-stone-50/50 z-10">
+                        <div class="w-7 h-7 rounded-full bg-stone-300 text-stone-600 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">2</div>
+                        <div class="flex-grow">
+                            <h5 class="font-bold text-stone-900 text-xs">Gerbang Mandatori ISPO (Hukum Lahan)</h5>
+                            <p id="flow-desc-2" class="text-[11px] text-stone-500 mt-0.5">Pemeriksaan izin kebun, surat kepemilikan, dan aturan anti-bakar.</p>
+                        </div>
+                        <span id="flow-status-2" class="text-[10px] font-extrabold bg-stone-100 text-stone-700 px-2 py-0.5 rounded-md uppercase">ISPO OK</span>
+                    </div>
+
+                    <!-- Step 3: Kebijakan RSPO -->
+                    <div id="flow-step-3" class="flex items-start gap-4 p-3 rounded-2xl border-2 border-stone-100 transition duration-300 bg-stone-50/50 z-10">
+                        <div class="w-7 h-7 rounded-full bg-stone-300 text-stone-600 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">3</div>
+                        <div class="flex-grow">
+                            <h5 class="font-bold text-stone-900 text-xs">Sertifikasi RSPO & Kemitraan Koperasi</h5>
+                            <p id="flow-desc-3" class="text-[11px] text-stone-500 mt-0.5">Kelompok tani mandiri, pelarangan parakuat, keselamatan kerja (K3).</p>
+                        </div>
+                        <span id="flow-status-3" class="text-[10px] font-extrabold bg-stone-100 text-stone-700 px-2 py-0.5 rounded-md uppercase">RSPO OK</span>
+                    </div>
+
+                    <!-- Step 4: Penentuan Harga -->
+                    <div id="flow-step-4" class="flex items-start gap-4 p-3 rounded-2xl border-2 border-stone-100 transition duration-300 bg-stone-50/50 z-10">
+                        <div class="w-7 h-7 rounded-full bg-stone-300 text-stone-600 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">4</div>
+                        <div class="flex-grow">
+                            <h5 class="font-bold text-stone-900 text-xs">Penetapan Pembayaran Akhir</h5>
+                            <p id="flow-desc-4" class="text-[11px] text-stone-500 mt-0.5">Perhitungan harga dasar Disbun + bonus premium sertifikat - denda cacat fisik.</p>
+                        </div>
+                        <span id="flow-status-4" class="text-[10px] font-extrabold bg-palm-100 text-palm-700 px-2 py-0.5 rounded-md uppercase">SIAP BAYAR</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Kalkulator Pendapatan Tani -->
+            <div class="bg-gradient-to-br from-palm-950 to-palm-900 p-6 rounded-3xl text-white shadow-md">
+                <div class="flex items-center gap-2 mb-5">
+                    <span class="p-1.5 bg-oil-500 text-palm-950 rounded-xl">
+                        <!-- Coin SVG -->
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </span>
+                    <h4 class="font-extrabold text-sm sm:text-base tracking-tight">Kalkulator Pembayaran Transaksi Sawit</h4>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+                    <!-- Tonase Input -->
+                    <div>
+                        <label class="block text-[10px] font-extrabold text-palm-300 uppercase tracking-wider mb-1.5">Berat Panen Sawit (TBS)</label>
+                        <div class="relative">
+                            <input type="number" id="input-berat" value="5000" oninput="updateGrading()" class="w-full bg-palm-800 border border-palm-600 rounded-xl px-4 py-2.5 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-oil-500">
+                            <span class="absolute right-3.5 top-3 text-xs text-palm-300 font-bold">Kg (Kilogram)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Harga Dasar Disbun Input -->
+                    <div>
+                        <label class="block text-[10px] font-extrabold text-palm-300 uppercase tracking-wider mb-1.5">Harga Dasar Sawit (Disbun Prov.)</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-3 text-xs text-palm-300 font-bold">Rp</span>
+                            <input type="number" id="input-harga" value="2600" oninput="updateGrading()" class="w-full bg-palm-800 border border-palm-600 rounded-xl pl-10 pr-12 py-2.5 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-oil-500">
+                            <span class="absolute right-3.5 top-3 text-xs text-palm-300 font-bold">/ Kg</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ledger / Breakdown Pembayaran -->
+                <div class="bg-palm-900/60 p-4 rounded-2xl border border-palm-800 space-y-2.5 text-xs">
+                    <div class="flex justify-between items-center text-palm-300">
+                        <span>Harga Hasil Panen Kotor:</span>
+                        <span id="calc-kotor" class="font-bold text-white">Rp 13.000.000</span>
+                    </div>
+                    <div class="flex justify-between items-center text-red-400">
+                        <span>Potongan denda TBS Mentah/Sakit:</span>
+                        <span id="calc-denda" class="font-bold">-Rp 260.000</span>
+                    </div>
+                    <div class="flex justify-between items-center text-emerald-400">
+                        <span>Bonus Premium Sertifikasi (ISPO/RSPO):</span>
+                        <span id="calc-bonus" class="font-bold">+Rp 390.000</span>
+                    </div>
+                    <hr class="border-palm-800 my-1">
+                    <div class="flex justify-between items-center text-base font-extrabold">
+                        <span class="text-oil-400">Estimasi Uang Bersih Diterima:</span>
+                        <span id="calc-bersih" class="text-oil-400 font-black text-lg">Rp 13.130.000</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between text-[10px] text-palm-300 font-light">
+                    <span>* Perhitungan berdasarkan rata-rata komitmen kemitraan PKS kelapa sawit setempat.</span>
+                    <button onclick="resetInputs()" class="text-white hover:text-oil-400 font-bold transition flex items-center gap-0.5">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 12H16M4 11V4h7"></path></svg>
+                        Reset Data
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Educational Modal (Popup Info) -->
+    <div id="modal-info" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-stone-200 flex flex-col justify-between max-h-[90vh]">
+            <div>
+                <div class="flex justify-between items-start border-b pb-3 mb-4">
+                    <h3 class="text-lg font-extrabold text-stone-900">Mengenal 3 Pilar Standar Sawit Berkelanjutan</h3>
+                    <button onclick="closeModal('modal-info')" class="text-stone-400 hover:text-stone-600 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                <div class="space-y-4 text-xs text-stone-600 overflow-y-auto max-h-[60vh] pr-2">
+                    
+                    <!-- SNI Card -->
+                    <div class="p-3 bg-stone-50 border border-stone-200 rounded-2xl">
+                        <h4 class="font-bold text-palm-700 text-sm flex items-center gap-1.5 mb-1">
+                            <span class="w-2 h-2 rounded-full bg-palm-500"></span>
+                            1. SNI 8675:2018 (Fisik TBS)
+                        </h4>
+                        <p class="leading-relaxed">
+                            Standar Nasional Indonesia untuk penyortiran fisik sawit di Loading Ramp Pabrik Kelapa Sawit (PKS). Petani wajib meminimalkan buah mentah (kadar rendemen minyak rendah) dan memotong gagang buah lebih dari 5 cm agar kadar minyak kelapa sawit CPO tidak terserap gagang kelapa sawit secara sia-sia.
+                        </p>
+                    </div>
+
+                    <!-- ISPO Card -->
+                    <div class="p-3 bg-stone-50 border border-stone-200 rounded-2xl">
+                        <h4 class="font-bold text-emerald-700 text-sm flex items-center gap-1.5 mb-1">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            2. ISPO (Indonesian Sustainable Palm Oil)
+                        </h4>
+                        <p class="leading-relaxed">
+                            Standar wajib (*Mandatory*) dari pemerintah Indonesia untuk memastikan perkebunan dikelola secara resmi, tidak merambah kawasan hutan negara, memiliki sertifikat tanah resmi, dan patuh terhadap tata cara lingkungan seperti tidak membakar lahan saat pembukaan kebun (*Zero Burning*).
+                        </p>
+                    </div>
+
+                    <!-- RSPO Card -->
+                    <div class="p-3 bg-stone-50 border border-stone-200 rounded-2xl">
+                        <h4 class="font-bold text-oil-700 text-sm flex items-center gap-1.5 mb-1">
+                            <span class="w-2 h-2 rounded-full bg-oil-500"></span>
+                            3. RSPO (Roundtable on Sustainable Palm Oil)
+                        </h4>
+                        <p class="leading-relaxed">
+                            Sertifikasi berkelanjutan tingkat global bersifat sukarela. Petani mandiri yang berhasil mematuhi RSPO (termasuk tidak memperkerjakan anak di bawah umur, tidak menggunakan herbisida dilarang seperti parakuat, serta bermitra di koperasi) berhak mendapatkan bonus **Harga Premium** per kilogram TBS sawit dari pembeli internasional.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t flex justify-end">
+                <button onclick="closeModal('modal-info')" class="bg-palm-600 hover:bg-palm-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition">
+                    Saya Mengerti
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Copyright -->
+    <footer class="bg-stone-900 text-stone-400 py-6 border-t border-stone-800">
+        <div class="max-w-6xl mx-auto px-4 text-center text-xs space-y-2">
+            <p>Standar rujukan: <strong class="text-stone-300">SNI 8675:2018</strong>, <strong class="text-stone-300">Perpres No. 44 Tahun 2020 tentang ISPO</strong>, dan <strong class="text-stone-300">Panduan Petani RSPO</strong>.</p>
+            <p>&copy; 2026 Alur Grading & Kemitraan Sawit Mandiri. Dikembangkan sebagai panduan edukatif petani sawit swadaya Indonesia.</p>
+        </div>
+    </footer>
+
+    <!-- Logic Script for Calculations & Layout Interactions -->
+    <script>
+        // State variables to lock maximum sum of percentages to 100%
+        let lockUpdate = false;
+
+        // References to DOM Elements
+        const inMatang = document.getElementById('input-matang');
+        const inMentah = document.getElementById('input-mentah');
+        const inCacat = document.getElementById('input-cacat');
+
+        const valMatang = document.getElementById('val-matang');
+        const valMentah = document.getElementById('val-mentah');
+        const valCacat = document.getElementById('val-cacat');
+
+        const inBerat = document.getElementById('input-berat');
+        const inHarga = document.getElementById('input-harga');
+
+        // Flowchart steps and results
+        const bannerResult = document.getElementById('banner-result');
+        const resultIconBg = document.getElementById('result-icon-bg');
+        const resultTitle = document.getElementById('result-title');
+        const resultDesc = document.getElementById('result-desc');
+        const resultBadge = document.getElementById('result-badge');
+        const payoutFactor = document.getElementById('payout-factor');
+
+        // Flow Nodes
+        const flowStep1 = document.getElementById('flow-step-1');
+        const flowStep2 = document.getElementById('flow-step-2');
+        const flowStep3 = document.getElementById('flow-step-3');
+        const flowStep4 = document.getElementById('flow-step-4');
+
+        const flowStatus1 = document.getElementById('flow-status-1');
+        const flowStatus2 = document.getElementById('flow-status-2');
+        const flowStatus3 = document.getElementById('flow-status-3');
+        const flowStatus4 = document.getElementById('flow-status-4');
+
+        const flowDesc1 = document.getElementById('flow-desc-1');
+        const flowDesc2 = document.getElementById('flow-desc-2');
+        const flowDesc3 = document.getElementById('flow-desc-3');
+        const flowDesc4 = document.getElementById('flow-desc-4');
+
+        // Checkboxes
+        const chkLegal = document.getElementById('check-legal');
+        const chkLindung = document.getElementById('check-lindung');
+        const chkKebakaran = document.getElementById('check-kebakaran');
+
+        const chkKelompok = document.getElementById('check-kelompok');
+        const chkRacun = document.getElementById('check-racun');
+        const chkSosial = document.getElementById('check-sosial');
+
+        // Financial Breakdown
+        const calcKotor = document.getElementById('calc-kotor');
+        const calcDenda = document.getElementById('calc-denda');
+        const calcBonus = document.getElementById('calc-bonus');
+        const calcBersih = document.getElementById('calc-bersih');
+
+        // Handle modal displays
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function resetInputs() {
+            inMatang.value = 90;
+            inMentah.value = 5;
+            inCacat.value = 5;
+
+            chkLegal.checked = true;
+            chkLindung.checked = true;
+            chkKebakaran.checked = true;
+
+            chkKelompok.checked = true;
+            chkRacun.checked = true;
+            chkSosial.checked = true;
+
+            inBerat.value = 5000;
+            inHarga.value = 2600;
+
+            updateGrading();
+        }
+
+        // Keep physical check parameters normalized (total = 100%)
+        function syncPercentages(origin) {
+            if (lockUpdate) return;
+            lockUpdate = true;
+
+            let matang = parseInt(inMatang.value);
+            let mentah = parseInt(inMentah.value);
+            let cacat = parseInt(inCacat.value);
+
+            if (origin === 'matang') {
+                // Adjust other parts to fit total
+                let diff = 100 - matang;
+                mentah = Math.round(diff * 0.5);
+                cacat = diff - mentah;
+            } else if (origin === 'mentah') {
+                let diff = 100 - mentah;
+                matang = Math.round(diff * 0.95);
+                cacat = diff - matang;
+            } else {
+                let diff = 100 - cacat;
+                matang = Math.round(diff * 0.95);
+                mentah = diff - matang;
+            }
+
+            // Bind values
+            inMatang.value = matang;
+            inMentah.value = mentah;
+            inCacat.value = cacat;
+
+            lockUpdate = false;
+            updateGrading();
+        }
+
+        // Core calculation logic and UI Flowchart updater
+        function updateGrading() {
+            const matang = parseInt(inMatang.value);
+            const mentah = parseInt(inMentah.value);
+            const cacat = parseInt(inCacat.value);
+
+            const berat = parseFloat(inBerat.value) || 0;
+            const hargaDasar = parseFloat(inHarga.value) || 0;
+
+            // Render slider labels
+            valMatang.innerText = matang + '%';
+            valMentah.innerText = mentah + '%';
+            valCacat.innerText = cacat + '%';
+
+            // Checkbox status
+            const hasISPO = chkLegal.checked && chkLindung.checked && chkKebakaran.checked;
+            const hasRSPO = chkKelompok.checked && chkRacun.checked && chkSosial.checked;
+
+            // Step 1 Flow State (SNI)
+            let sniPassed = false;
+            let dendaPersen = 0; // denda dari berat kotor
+
+            flowStep1.className = "flex items-start gap-4 p-3 rounded-2xl border-2 transition duration-300 bg-stone-50/50 z-10";
+            
+            // Calculate penalties based on TBS status
+            if (mentah > 5) {
+                dendaPersen += (mentah - 5) * 0.01; // denda 1% tiap 1% kelebihan buah mentah
+            }
+            if (cacat > 5) {
+                dendaPersen += (cacat - 5) * 0.015; // denda 1.5% tiap 1% gagang panjang/buah kosong
+            }
+
+            if (matang >= 80 && mentah <= 10 && cacat <= 10) {
+                sniPassed = true;
+                flowStep1.classList.add('step-active');
+                flowStatus1.innerText = "MATANG: BAIK";
+                flowStatus1.className = "text-[10px] font-extrabold bg-palm-100 text-palm-700 px-2 py-0.5 rounded-md uppercase";
+                flowDesc1.innerText = "Kandungan minyak alami TBS diperkirakan prima (Rendemen ~22%).";
+            } else {
+                flowStep1.classList.add('step-warning');
+                flowStatus1.innerText = "MATANG: KURANG";
+                flowStatus1.className = "text-[10px] font-extrabold bg-orange-100 text-orange-700 px-2 py-0.5 rounded-md uppercase";
+                flowDesc1.innerText = `TBS didominasi mentah/kotor. Diskon bobot denda sekitar ${(dendaPersen * 100).toFixed(1)}%.`;
+            }
+
+            // Step 2 Flow State (ISPO)
+            flowStep2.className = "flex items-start gap-4 p-3 rounded-2xl border-2 transition duration-300 bg-stone-50/50 z-10";
+            if (hasISPO) {
+                flowStep2.classList.add('step-active');
+                flowStatus2.innerText = "ISPO: LOLOS";
+                flowStatus2.className = "text-[10px] font-extrabold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md uppercase";
+                flowDesc2.innerText = "Lahan legal dan ramah lingkungan. Diakui sepenuhnya oleh regulasi nasional.";
+            } else {
+                flowStep2.classList.add('step-danger');
+                flowStatus2.innerText = "ISPO: MASALAH";
+                flowStatus2.className = "text-[10px] font-extrabold bg-red-100 text-red-700 px-2 py-0.5 rounded-md uppercase";
+                flowDesc2.innerText = "Legalitas belum lengkap atau melanggar aturan lindung. Terancam dilarang suplai PKS!";
+            }
+
+            // Step 3 Flow State (RSPO)
+            flowStep3.className = "flex items-start gap-4 p-3 rounded-2xl border-2 transition duration-300 bg-stone-50/50 z-10";
+            if (hasRSPO) {
+                flowStep3.classList.add('step-active');
+                flowStatus3.innerText = "RSPO: AKTIF";
+                flowStatus3.className = "text-[10px] font-extrabold bg-palm-100 text-palm-700 px-2 py-0.5 rounded-md uppercase";
+                flowDesc3.innerText = "Koperasi petani aktif, anti parakuat, menjamin hak asasi & tanpa pekerja anak.";
+            } else {
+                flowStep3.classList.add('step-warning');
+                flowStatus3.innerText = "RSPO: NONAKTIF";
+                flowStatus3.className = "text-[10px] font-extrabold bg-stone-100 text-stone-500 px-2 py-0.5 rounded-md uppercase";
+                flowDesc3.innerText = "Belum berhak mendapatkan klaim bonus pasar berkelanjutan ekspor.";
+            }
+
+            // Step 4: Final Settlement Decision
+            flowStep4.className = "flex items-start gap-4 p-3 rounded-2xl border-2 transition duration-300 bg-stone-50/50 z-10 step-active";
+            flowStatus4.innerText = "SIAP PROSES";
+            flowDesc4.innerText = "Transaksi siap diselesaikan dengan rincian parameter di bawah ini.";
+
+            // Financial Calculations
+            const hargaKotor = berat * hargaDasar;
+            const nominalDenda = hargaKotor * dendaPersen;
+            
+            // Premium incentives (ISPO and RSPO add extra value per kg)
+            let premiumBonusPerKg = 0;
+            if (hasISPO) premiumBonusPerKg += 30; // ISPO incentive Rp 30 / kg
+            if (hasRSPO) premiumBonusPerKg += 50; // RSPO premium incentive Rp 50 / kg
+            const nominalBonus = berat * premiumBonusPerKg;
+
+            const hargaBersih = hargaKotor - nominalDenda + nominalBonus;
+
+            // Render Financial Outputs with Rupiah Formatting
+            calcKotor.innerText = formatRupiah(hargaKotor);
+            calcDenda.innerText = dendaPersen > 0 ? `-${formatRupiah(nominalDenda)}` : `Rp 0`;
+            calcBonus.innerText = nominalBonus > 0 ? `+${formatRupiah(nominalBonus)}` : `Rp 0`;
+            calcBersih.innerText = formatRupiah(hargaBersih);
+
+            // Diagnose overall category and update Header banner
+            updateBannerUI(sniPassed, hasISPO, hasRSPO, dendaPersen);
+        }
+
+        // Helper function for currency layout
+        function formatRupiah(angka) {
+            return 'Rp ' + Math.round(angka).toLocaleString('id-ID');
+        }
+
+        // Helper to dynamic style change of header banner
+        function updateBannerUI(sni, ispo, rspo, denda) {
+            bannerResult.className = "border p-5 rounded-3xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition duration-300 ";
+            
+            if (ispo && rspo && sni && denda === 0) {
+                // Perfect Status
+                bannerResult.classList.add("bg-palm-50", "border-palm-200");
+                resultIconBg.className = "bg-palm-600 text-white p-3 rounded-2xl shadow-inner";
+                resultIconBg.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                resultTitle.innerText = "SAWIT PREMIUM EKSPOR";
+                resultTitle.className = "text-lg font-black text-palm-950";
+                resultDesc.innerText = "Sangat prima! Mendapatkan denda 0% dan bonus premium ekspor penuh (Rp 80/Kg).";
+                resultBadge.className = "inline-block bg-palm-600 text-white text-[11px] font-extrabold uppercase px-3 py-1 rounded-full tracking-wider";
+                resultBadge.innerText = "MUTU PREMIUM";
+                payoutFactor.innerText = "Insentif: ISPO & RSPO Aktif";
+                payoutFactor.className = "text-xs font-bold text-palm-700";
+            } else if (ispo && !rspo && sni) {
+                // National Certified Only
+                bannerResult.classList.add("bg-emerald-50/60", "border-emerald-200");
+                resultIconBg.className = "bg-emerald-600 text-white p-3 rounded-2xl shadow-inner";
+                resultIconBg.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>';
+                resultTitle.innerText = "SAWIT MATANG (LOLOS ISPO)";
+                resultTitle.className = "text-lg font-black text-emerald-950";
+                resultDesc.innerText = "Aman & Legal. Kebun Anda bersertifikat ISPO tetapi belum mendapatkan harga global RSPO.";
+                resultBadge.className = "inline-block bg-emerald-600 text-white text-[11px] font-extrabold uppercase px-3 py-1 rounded-full tracking-wider";
+                resultBadge.innerText = "MUTU BAIK";
+                payoutFactor.innerText = "Insentif: ISPO Aktif";
+                payoutFactor.className = "text-xs font-bold text-emerald-700";
+            } else if (!ispo) {
+                // No Legal Certification (Danger Area)
+                bannerResult.classList.add("bg-red-50", "border-red-200");
+                resultIconBg.className = "bg-red-500 text-white p-3 rounded-2xl shadow-inner";
+                resultIconBg.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>';
+                resultTitle.innerText = "SAWIT SUBSTANDAR (NON-ISPO)";
+                resultTitle.className = "text-lg font-black text-red-950";
+                resultDesc.innerText = "Hati-hati! Pabrik (PKS) terancam menolak TBS Anda karena legalitas lahan tidak lengkap.";
+                resultBadge.className = "inline-block bg-red-600 text-white text-[11px] font-extrabold uppercase px-3 py-1 rounded-full tracking-wider";
+                resultBadge.innerText = "RISIKO DITOLAK";
+                payoutFactor.innerText = "Dilarang Undang-Undang";
+                payoutFactor.className = "text-xs font-bold text-red-600";
+            } else {
+                // Standard grade with some deductions
+                bannerResult.classList.add("bg-orange-50/60", "border-orange-200");
+                resultIconBg.className = "bg-orange-500 text-white p-3 rounded-2xl shadow-inner";
+                resultIconBg.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                resultTitle.innerText = "SAWIT DENGAN DENDA POTONGAN";
+                resultTitle.className = "text-lg font-black text-orange-950";
+                resultDesc.innerText = `Lolos sertifikat, namun Anda terkena potongan harga akibat mutu buah mentah/kotor.`;
+                resultBadge.className = "inline-block bg-orange-500 text-white text-[11px] font-extrabold uppercase px-3 py-1 rounded-full tracking-wider";
+                resultBadge.innerText = "MUTU STANDAR";
+                payoutFactor.innerText = "Diskon Bobot Berlaku";
+                payoutFactor.className = "text-xs font-bold text-orange-700";
+            }
+        }
+
+        // Initialize state on render
+        window.onload = function() {
+            updateGrading();
+        }
+    </script>
+</body>
+</html>
